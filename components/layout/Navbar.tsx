@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -14,42 +15,54 @@ export const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 w-full z-[100] transition-all duration-500",
-        isScrolled ? "bg-luxury-offwhite/90 backdrop-blur-md py-4 shadow-sm" : "bg-transparent py-8"
+        "fixed top-0 left-0 w-full z-[100] transition-all duration-700 ease-organic",
+        isScrolled
+          ? "bg-luxury-dark/80 backdrop-blur-xl py-4 shadow-cinematic border-b border-white/5"
+          : "bg-transparent py-8"
       )}
     >
       <Container>
         <div className="flex items-center justify-between">
-          <div className={cn(
-            "text-2xl font-serif tracking-tighter transition-colors duration-500",
-            isScrolled ? "text-luxury-anthracite" : "text-luxury-offwhite"
-          )}>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className={cn(
+              "text-2xl font-serif tracking-[0.2em] transition-colors duration-500",
+              isScrolled ? "text-luxury-offwhite" : "text-luxury-offwhite"
+            )}
+          >
             LUXESTAY
-          </div>
+          </motion.div>
 
           {/* Desktop Nav */}
           <div className={cn(
-            "hidden md:flex items-center gap-8 text-[10px] uppercase tracking-[0.2em] font-medium transition-colors duration-500",
-            isScrolled ? "text-luxury-anthracite" : "text-luxury-offwhite"
+            "hidden md:flex items-center gap-10 text-[10px] uppercase tracking-[0.25em] font-medium transition-colors duration-500",
+            "text-luxury-offwhite/80"
           )}>
-            <a href="#" className="hover:text-luxury-gold transition-colors">Destinations</a>
-            <a href="#" className="hover:text-luxury-gold transition-colors">Resorts</a>
-            <a href="#" className="hover:text-luxury-gold transition-colors">Experience</a>
-            <a href="#" className="hover:text-luxury-gold transition-colors">Offers</a>
+            {["Destinations", "Resorts", "Experience", "Offers"].map((item) => (
+              <a
+                key={item}
+                href="#"
+                className="relative group hover:text-luxury-gold transition-colors duration-300"
+              >
+                {item}
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-luxury-gold transition-all duration-300 group-hover:w-full" />
+              </a>
+            ))}
             <Button
               variant={isScrolled ? "primary" : "outline"}
               size="sm"
               className={cn(
-               !isScrolled && "border-luxury-offwhite text-luxury-offwhite hover:bg-luxury-offwhite hover:text-luxury-anthracite"
+                "transition-all duration-500 rounded-none kerning-loose",
+                !isScrolled && "border-white/30 text-white hover:bg-white hover:text-luxury-dark border-luxury-offwhite"
               )}
-              aria-label="Book your stay now"
             >
               Book Now
             </Button>
@@ -57,29 +70,37 @@ export const Navbar = () => {
 
           {/* Mobile Toggle */}
           <button
-            className={cn(
-              "md:hidden p-2 transition-colors duration-500",
-              isScrolled ? "text-luxury-anthracite" : "text-luxury-offwhite"
-            )}
+            className="md:hidden p-2 text-luxury-offwhite"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-expanded={isMenuOpen}
-            aria-label="Toggle menu"
           >
-            {isMenuOpen ? <X /> : <Menu />}
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </Container>
 
       {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-luxury-offwhite border-t border-luxury-champagne p-8 flex flex-col gap-6 animate-in slide-in-from-top duration-300">
-           <a href="#" className="text-sm uppercase tracking-widest text-luxury-anthracite">Destinations</a>
-           <a href="#" className="text-sm uppercase tracking-widest text-luxury-anthracite">Resorts</a>
-           <a href="#" className="text-sm uppercase tracking-widest text-luxury-anthracite">Experience</a>
-           <a href="#" className="text-sm uppercase tracking-widest text-luxury-anthracite">Offers</a>
-           <Button variant="primary" className="w-full">Book Now</Button>
-        </div>
-      )}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "100vh" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden fixed inset-0 bg-luxury-dark z-[90] flex flex-col items-center justify-center gap-8"
+          >
+             {["Destinations", "Resorts", "Experience", "Offers"].map((item) => (
+              <a
+                key={item}
+                href="#"
+                className="text-2xl font-serif tracking-widest text-luxury-offwhite hover:text-luxury-gold"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item}
+              </a>
+            ))}
+            <Button variant="primary" className="mt-8 px-12">Book Now</Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

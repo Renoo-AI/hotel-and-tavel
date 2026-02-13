@@ -1,60 +1,94 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 
 export const Hero = () => {
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+
   return (
-    <section className="relative h-[90vh] w-full flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+    <section
+      ref={containerRef}
+      className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-luxury-dark"
+    >
+      {/* Background with Parallax and Mesh Gradient Overlay */}
+      <motion.div style={{ y, scale }} className="absolute inset-0 z-0">
         <Image
           src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=1920"
           alt="Luxury Hotel"
           fill
           priority
-          className="object-cover"
+          className="object-cover opacity-60"
         />
-        <div className="absolute inset-0 bg-black/30" />
-      </div>
+        <div className="absolute inset-0 bg-mesh-gradient opacity-40 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-gradient-to-b from-luxury-dark/40 via-transparent to-luxury-dark" />
+      </motion.div>
 
-      <Container className="relative z-10 text-center text-luxury-offwhite">
+      <Container className="relative z-10 text-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 1.2, ease: [0.33, 1, 0.68, 1] }}
+          style={{ opacity }}
         >
-          <span className="uppercase tracking-[0.3em] text-sm mb-4 block">
-            Welcome to Paradise
-          </span>
-          <h1 className="text-5xl md:text-7xl font-serif mb-8 leading-tight">
-            The Art of <br /> Quiet Luxury
+          <motion.span
+            initial={{ opacity: 0, letterSpacing: "0.5em" }}
+            animate={{ opacity: 1, letterSpacing: "0.3em" }}
+            transition={{ duration: 1.5, delay: 0.2 }}
+            className="uppercase text-xs mb-6 block text-luxury-gold font-medium kerning-loose"
+          >
+            Defining the Future of Hospitality
+          </motion.span>
+
+          <h1 className="text-mask mb-8 gpu-accelerated">
+            The Art of <br />
+            <span className="italic font-light">Quiet Luxury</span>
           </h1>
-          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light tracking-wide opacity-90">
-            Experience unparalleled comfort and elegance in the world&apos;s most
-            exclusive destinations.
+
+          <p className="text-luxury-offwhite/70 max-w-2xl mx-auto mb-12 font-light tracking-wide leading-relaxed">
+            Where architecture meets emotion. Discover a collection of sanctuaries
+            designed for the discerning traveler seeking profound tranquility.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button variant="primary" size="lg" className="bg-luxury-offwhite text-luxury-anthracite hover:bg-luxury-champagne border-none">
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <Button
+              variant="primary"
+              size="lg"
+              className="bg-luxury-gold text-luxury-dark hover:bg-white transition-all duration-500 rounded-none px-10 kerning-loose"
+            >
               Explore Suites
             </Button>
-            <Button variant="outline" size="lg" className="border-luxury-offwhite text-luxury-offwhite hover:bg-luxury-offwhite hover:text-luxury-anthracite">
-              Book Your Stay
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-white/20 text-white hover:bg-white/10 backdrop-blur-sm transition-all duration-500 rounded-none px-10 kerning-loose"
+            >
+              Our Philosophy
             </Button>
           </div>
         </motion.div>
       </Container>
 
-      {/* Scroll indicator */}
+      {/* Cinematic Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        transition={{ delay: 1.5, duration: 1 }}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
       >
-        <div className="w-px h-12 bg-gradient-to-b from-luxury-offwhite to-transparent" />
+        <span className="text-[8px] uppercase tracking-[0.4em] text-luxury-gold/60">Scroll</span>
+        <div className="w-px h-16 bg-gradient-to-b from-luxury-gold/60 to-transparent" />
       </motion.div>
     </section>
   );
