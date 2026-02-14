@@ -54,6 +54,35 @@ body::before {
   .kerning-tight {
     letter-spacing: -0.02em;
   }
+
+  /* Safe Area Utilities */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .min-h-screen-safe {
+    min-height: calc(100vh + env(safe-area-inset-bottom));
+  }
+
+  /* Touch Optimization */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  input, select, textarea {
+    user-select: auto;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 @layer utilities {

@@ -1,0 +1,16 @@
+{
+  "name": "LuxeStay",
+  "short_name": "LuxeStay",
+  "description": "Experience the ultimate in luxury travel and hospitality.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF9F6",
+  "theme_color": "#FAF9F6",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

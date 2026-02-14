@@ -35,6 +35,9 @@ const config: Config = {
       transitionTimingFunction: {
         'organic': 'cubic-bezier(0.33, 1, 0.68, 1)',
       },
+      screens: {
+        'xs': '375px',
+      },
     },
   },
   plugins: [],
